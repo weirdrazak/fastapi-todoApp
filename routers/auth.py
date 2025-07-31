@@ -1,9 +1,7 @@
 from fastapi import Depends, HTTPException, status, APIRouter, Request, Response, Form
 from pydantic import BaseModel
 from typing import Optional
-
 from starlette.responses import RedirectResponse
-
 import models
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -11,7 +9,6 @@ from database import SessionLocal, engine
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
-
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
@@ -102,7 +99,7 @@ async def get_current_user(request: Request):
         username: str = payload.get("sub")
         user_id: int = payload.get("id")
         if username is None or user_id is None:
-            logout(request)
+            await logout(request)
         return {"username": username, "id": user_id}
     except JWTError:
         raise HTTPException(status_code=404, detail="Not Found")
